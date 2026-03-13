@@ -37,8 +37,9 @@ def index():
 # -- Run --------------------------------------------------------------------
 
 if __name__ == "__main__":
-    from routes.fact_checker import get_chroma
-    print("[Jan-Sahayak] Initialising ChromaDB vector store...")
-    get_chroma()
+    from rag.dataprep import build_index
+    print("[Jan-Sahayak] Building RAG index from data/ folder...")
+    count = build_index()
+    print(f"[Jan-Sahayak] Index ready — {count} chunks in ChromaDB.")
     print("[Jan-Sahayak] Server starting on http://localhost:5000")
     socketio.run(app, host="0.0.0.0", port=5000, debug=True)

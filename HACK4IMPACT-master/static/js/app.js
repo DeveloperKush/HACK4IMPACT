@@ -85,24 +85,26 @@ async function verifyFact() {
             return;
         }
 
-        if (!data.results || data.results.length === 0) {
+        if (!data.answer) {
             resultsDiv.innerHTML = '<div class="empty-state"><div class="empty-state__icon">🔍</div><div class="empty-state__text">No matching facts found. Try rephrasing your query.</div></div>';
             return;
         }
 
-        resultsDiv.innerHTML = data.results.map(r => {
-            const badgeClass = r.confidence > 60 ? 'badge--high' : r.confidence > 35 ? 'badge--medium' : 'badge--low';
-            const confidenceLabel = r.confidence > 60 ? 'High Match' : r.confidence > 35 ? 'Moderate' : 'Low Match';
-            return `
-                <div class="result-card">
-                    <div class="result-card__header">
-                        <span class="result-card__scheme">${r.scheme || r.category}</span>
-                        <span class="result-card__badge ${badgeClass}">${confidenceLabel} · ${r.confidence}%</span>
-                    </div>
-                    <p class="result-card__text">${r.fact}</p>
+        const badgeClass = data.best_confidence > 60 ? 'badge--high' : data.best_confidence > 35 ? 'badge--medium' : 'badge--low';
+        const confidenceLabel = data.best_confidence > 60 ? 'High Confidence' : data.best_confidence > 35 ? 'Moderate' : 'Low Confidence (LLM)';
+        
+        resultsDiv.innerHTML = `
+            <div class="result-card">
+                <div class="result-card__header">
+                    <span class="result-card__scheme">Fact Check Result</span>
+                    <span class="result-card__badge ${badgeClass}">${confidenceLabel} · ${data.best_confidence}%</span>
                 </div>
-            `;
-        }).join('');
+                <p class="result-card__text">${data.answer}</p>
+                <div style="font-size: 0.8rem; color: #94a3b8; margin-top: 10px;">
+                    <strong>Sources:</strong> ${data.sources && data.sources.length > 0 ? data.sources.join(", ") : "None"}
+                </div>
+            </div>
+        `;
 
     } catch (err) {
         resultsDiv.innerHTML = `<div class="disclaimer">Error: ${err.message}</div>`;

@@ -1,23 +1,24 @@
+"""
+routes/fact_checker.py — Dual-mode RAG Fact Checker Blueprint.
+
+Mode 1 (retrieval): ChromaDB finds high-confidence matching chunks
+                    → Groq answers grounded in those chunks.
+Mode 2 (LLM brain): No good match in local data
+                    → Groq answers from its own knowledge with a disclaimer.
+"""
+
 import io
 
 from flask import Blueprint, request, jsonify
 
 fact_checker_bp = Blueprint("fact_checker", __name__)
 
-_chroma_collection = None
 
+# ---------------------------------------------------------------------------
+# OCR helper (unchanged)
+# ---------------------------------------------------------------------------
 
-def get_chroma():
-    global _chroma_collection
-    if _chroma_collection is None:
-        from chroma_utils import init_collection, seed_data
-        _chroma_collection = init_collection()
-        seed_data(_chroma_collection)
-    return _chroma_collection
-
-
-def extract_text_from_image(image_bytes):
-    """Run OCR on image bytes. Returns extracted text or error string."""
+def extract_text_from_image(image_bytes: bytes) -> str:
     try:
         from PIL import Image
         import pytesseract
@@ -30,40 +31,51 @@ def extract_text_from_image(image_bytes):
         return f"[OCR Error] {e}. Please enter text manually."
 
 
+# ---------------------------------------------------------------------------
+# Route
+# ---------------------------------------------------------------------------
+
 @fact_checker_bp.route("/verify", methods=["POST"])
 def verify():
-    """Accept text or image, query the vector store, return matching facts."""
-    text = None
+    """
+    Accept text or image upload.
+    Returns JSON:
+      {
+        "query": str,
+        "mode": "retrieval" | "llm_fallback",
+        "answer": str,
+        "sources": [str, ...],
+        "best_confidence": float,
+        "chunks_used": int
+      }
+    """
+    query = None
 
-    # Image upload Check
+    # --- Image upload ---
     if "image" in request.files:
         file = request.files["image"]
         if file.filename:
-            image_bytes = file.read()
-            text = extract_text_from_image(image_bytes)
-            if text.startswith("["):
-                return jsonify({"error": text, "results": []}), 200
+            query = extract_text_from_image(file.read())
+            if query.startswith("["):
+                return jsonify({"error": query, "results": []}), 200
 
-    if not text:
+    # --- Plain text ---
+    if not query:
         data = request.get_json(silent=True) or {}
-        text = data.get("text", "").strip() or request.form.get("text", "").strip()
+        query = (
+            data.get("text", "").strip()
+            or request.form.get("text", "").strip()
+        )
 
-    if not text:
-        return jsonify({"error": "Please provide text or an image to verify.", "results": []}), 400
+    if not query:
+        return jsonify({"error": "Please provide text or an image to verify."}), 400
 
-    from chroma_utils import query_facts
-    matches = query_facts(text, n_results=3, collection=get_chroma())
+    try:
+        from rag.llmrag import fact_check
+        result = fact_check(query)
+    except EnvironmentError as exc:
+        return jsonify({"error": str(exc)}), 503
+    except Exception as exc:
+        return jsonify({"error": f"RAG pipeline error: {exc}"}), 500
 
-    results = []
-    for m in matches:
-        results.append({
-            "fact": m["text"],
-            "confidence": m["confidence"],
-            "category": m["metadata"].get("category", ""),
-            "scheme": m["metadata"].get("scheme", ""),
-        })
-
-    return jsonify({
-        "query": text,
-        "results": results,
-    })
+    return jsonify(result)
