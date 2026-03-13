@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Jan-Sahayak — Fact Checker, Mental Health Helper & Telemedicine for rural India">
+    <title>Jan-Sahayak 🇮🇳 — Your Digital Wellbeing Companion</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <!-- ════════════════ HEADER ════════════════ -->
+    <header class="header">
+        <div class="header__brand">
+            <span class="header__logo">🇮🇳</span>
+            <div>
+                <div class="header__title">Jan-Sahayak</div>
+                <div class="header__subtitle">Fact Check · Mental Health · Telemedicine</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ════════════════ TAB NAVIGATION ════════════════ -->
+    <nav class="tab-nav">
+        <button class="tab-btn active" data-tab="factchecker" onclick="switchTab('factchecker')">
+            <span class="tab-btn__icon">🔍</span>
+            <span class="tab-btn__label">Fact Checker</span>
+        </button>
+        <button class="tab-btn" data-tab="mentalhealth" onclick="switchTab('mentalhealth')">
+            <span class="tab-btn__icon">💚</span>
+            <span class="tab-btn__label">Mental Health</span>
+        </button>
+        <button class="tab-btn" data-tab="telemedicine" onclick="switchTab('telemedicine')">
+            <span class="tab-btn__icon">🩺</span>
+            <span class="tab-btn__label">Telemedicine</span>
+        </button>
+    </nav>
+
+    <!-- ════════════════ MAIN CONTENT ════════════════ -->
+    <main class="main-content">
+
+        <!-- ═══════ FACT CHECKER PANEL ═══════ -->
+        <section id="panel-factchecker" class="mode-panel active">
+            <div class="card">
+                <div class="card__title">
+                    <span class="card__title-icon">🔍</span>
+                    Verify a Claim
+                </div>
+                <p class="text-muted text-sm mb-2">
+                    Enter a claim or news headline to check against our database of verified government schemes and
+                    fact-checks.
+                </p>
+                <textarea id="fact-input" rows="3"
+                    placeholder="e.g. Government is giving ₹15 lakh to every citizen's account..."></textarea>
+
+                <div class="mt-2">
+                    <label class="text-muted text-sm">Or upload an image (screenshot/photo)</label>
+                    <input type="file" id="fact-image" accept="image/*" class="mt-1">
+                </div>
+
+                <div class="btn-row">
+                    <button class="btn btn--blue btn--full" onclick="verifyFact()">
+                        🔎 Verify Now
+                    </button>
+                </div>
+            </div>
+
+            <div id="fact-results">
+                <div class="empty-state">
+                    <div class="empty-state__icon">📋</div>
+                    <div class="empty-state__text">Results will appear here after you submit a claim to verify.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════ MENTAL HEALTH PANEL ═══════ -->
+        <section id="panel-mentalhealth" class="mode-panel">
+
+            <!-- Sub-tabs -->
+            <div class="sub-tabs">
+                <button class="sub-tab active" data-subtab="therapist"
+                    onclick="switchSubTab('mentalhealth', 'therapist')">
+                    💬 Therapist
+                </button>
+                <button class="sub-tab" data-subtab="diary" onclick="switchSubTab('mentalhealth', 'diary')">
+                    📔 Diary
+                </button>
+                <button class="sub-tab" data-subtab="peerchat" onclick="switchSubTab('mentalhealth', 'peerchat')">
+                    🤝 Peer Chat
+                </button>
+            </div>
+
+            <!-- Therapist Sub-panel -->
+            <div id="sub-therapist" class="sub-panel active">
+                <div class="card">
+                    <div class="card__title">
+                        <span class="card__title-icon">💬</span>
+                        Talk to a Listener
+                    </div>
+                    <p class="text-muted text-sm mb-2">
+                        This is a safe, anonymous space. I'm here to listen — not to judge or give medical advice.
+                    </p>
+
+                    <div id="therapist-chat" class="chat-area">
+                        <!-- Messages will be appended here by JS -->
+                    </div>
+
+                    <div class="chat-input-row">
+                        <input type="text" id="therapist-input" placeholder="How are you feeling today?">
+                        <button class="btn btn--green" onclick="sendTherapistMsg()">Send</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Diary Sub-panel -->
+            <div id="sub-diary" class="sub-panel">
+                <div class="card">
+                    <div class="card__title">
+                        <span class="card__title-icon">📔</span>
+                        Anonymous Diary
+                    </div>
+                    <p class="text-muted text-sm mb-1">
+                        Your entries are saved anonymously using a random ID. No personal information is collected.
+                    </p>
+
+                    <div class="mood-selector">
+                        <button class="mood-btn" onclick="selectMood('happy', this)">😊 Happy</button>
+                        <button class="mood-btn selected" onclick="selectMood('neutral', this)">😐 Neutral</button>
+                        <button class="mood-btn" onclick="selectMood('sad', this)">😢 Sad</button>
+                        <button class="mood-btn" onclick="selectMood('anxious', this)">😰 Anxious</button>
+                        <button class="mood-btn" onclick="selectMood('angry', this)">😡 Angry</button>
+                        <button class="mood-btn" onclick="selectMood('grateful', this)">🙏 Grateful</button>
+                    </div>
+
+                    <textarea id="diary-text" rows="4" placeholder="Write what's on your mind..."></textarea>
+
+                    <div class="btn-row">
+                        <button class="btn btn--purple btn--full" onclick="saveDiary()">📝 Save Entry</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card__title">
+                        <span class="card__title-icon">📖</span>
+                        Your Entries
+                    </div>
+                    <div id="diary-entries">
+                        <div class="empty-state">
+                            <div class="empty-state__icon">📔</div>
+                            <div class="empty-state__text">Your anonymous diary is empty. Start writing your first entry
+                                above.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Peer Chat Sub-panel -->
+            <div id="sub-peerchat" class="sub-panel">
+                <div class="card">
+                    <div class="card__title">
+                        <span class="card__title-icon">🤝</span>
+                        Anonymous Peer Support
+                    </div>
+                    <p class="text-muted text-sm mb-1">
+                        Connect anonymously with someone who might understand what you're going through. Be kind and
+                        supportive.
+                    </p>
+                    <p id="peer-status" class="text-muted text-sm mb-2">
+                        Connect anonymously with someone who understands.
+                    </p>
+
+                    <div id="peer-chat" class="chat-area">
+                        <div class="chat-msg chat-msg--system">
+                            Click "Find a Peer" to be matched with an anonymous listener.
+                        </div>
+                    </div>
+
+                    <div id="peer-input-row" class="chat-input-row hidden">
+                        <input type="text" id="peer-input" placeholder="Type a message...">
+                        <button class="btn btn--green" onclick="sendPeerMsg()">Send</button>
+                    </div>
+
+                    <div class="btn-row">
+                        <button id="peer-join-btn" class="btn btn--purple btn--full" onclick="joinPeerQueue()">
+                            🤝 Find a Peer
+                        </button>
+                        <button id="peer-leave-btn" class="btn btn--red btn--full hidden" onclick="leavePeerChat()">
+                            Leave Chat
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════ TELEMEDICINE PANEL ═══════ -->
+        <section id="panel-telemedicine" class="mode-panel">
+            <div class="disclaimer">
+                ⚠️ <strong>IMPORTANT:</strong> This tool provides basic first-aid guidance only. It is NOT a substitute
+                for
+                professional medical advice. Always visit your nearest Primary Health Centre (PHC) or hospital for
+                proper
+                medical attention.
+            </div>
+
+            <div class="card">
+                <div class="card__title">
+                    <span class="card__title-icon">🩺</span>
+                    Describe Your Symptoms
+                </div>
+                <p class="text-muted text-sm mb-2">
+                    Tell us what you're experiencing. You can describe in English or Hindi (transliterated).
+                    Example: "high fever and headache for 2 days" or "saanp ne kaat liya"
+                </p>
+                <textarea id="symptom-input" rows="3"
+                    placeholder="e.g. I have chest pain and difficulty breathing..."></textarea>
+                <div class="btn-row">
+                    <button class="btn btn--amber btn--full" onclick="checkSymptoms()">
+                        🩺 Check Symptoms
+                    </button>
+                </div>
+            </div>
+
+            <div id="triage-results">
+                <div class="empty-state">
+                    <div class="empty-state__icon">🏥</div>
+                    <div class="empty-state__text">Describe your symptoms above to receive first-aid guidance and triage
+                        information.</div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ════════════════ FOOTER ════════════════ -->
+    <footer class="footer">
+        Jan-Sahayak &copy; 2026 · Built with ❤️ for rural India
+        <br>
+        <span class="text-muted">Emergency? Call 108 (Ambulance) · iCall: 9152987821 · AASRA: 91-22-27546669</span>
+    </footer>
+
+    <!-- ════════════════ SCRIPTS ════════════════ -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.4/socket.io.min.js"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+
+</body>
+
+</html>
