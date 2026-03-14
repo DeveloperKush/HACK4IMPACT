@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>जन-Sahayak | Inclusive Innovation & Social Impact</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        
+        /* New Blurred Image Background */
+        .bg-blurred-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -2;
+            background-image: url('72a0bb5acad374b138200e7d3efe38b3.jpg'); 
+            background-size: cover;
+            background-position: center center;
+            filter: blur(12px); 
+            transform: scale(1.1); 
+        }
+
+        /* Tech-Inspired Dot Background Overlay */
+        .bg-dots-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            background-color: rgba(248, 250, 252, 0.75); 
+            background-image: radial-gradient(rgba(203, 213, 225, 0.8) 1.5px, transparent 1.5px);
+            background-size: 28px 28px;
+            background-position: center center;
+        }
+
+        /* Dark Blurry Feature for Navbar */
+        .dark-glass { 
+            background: linear-gradient(90deg, rgba(15, 23, 42, 0.85) 0%, rgba(30, 41, 59, 0.7) 50%, rgba(15, 23, 42, 0.85) 100%);
+            backdrop-filter: blur(20px) saturate(180%); 
+            -webkit-backdrop-filter: blur(20px) saturate(180%); 
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .light-glass {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+        
+        .gradient-text { 
+            background: linear-gradient(135deg, #2563eb 0%, #7c3aed 50%, #db2777 100%); 
+            background-size: 200% auto;
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            animation: textShine 5s linear infinite;
+        }
+        .gradient-bg { background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%); }
+        
+        @keyframes textShine {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-20px) scale(1.05); }
+            100% { transform: translateY(0px) scale(1); }
+        }
+        .animate-float { animation: float 7s ease-in-out infinite; }
+        .animate-float-delayed { animation: float 7s ease-in-out 3.5s infinite; }
+        
+        .feature-card { 
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+            border-radius: 2rem; 
+        }
+        .feature-card:hover { 
+            transform: translateY(-8px); 
+        }
+
+        /* Modal Transitions */
+        #feature-overlay { transition: opacity 0.3s ease, visibility 0.3s ease; }
+        .modal-content { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        #feature-overlay.hidden-modal { opacity: 0; visibility: hidden; pointer-events: none; }
+        #feature-overlay.hidden-modal .modal-content { transform: scale(0.95) translateY(20px); }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+    </style>
+</head>
+<body class="text-slate-900 selection:bg-blue-200 selection:text-blue-900">
+
+    <div class="bg-blurred-image"></div>
+    <div class="bg-dots-overlay"></div>
+
+    <nav class="fixed top-6 left-1/2 -translate-x-1/2 w-[95%] max-w-7xl z-50 dark-glass rounded-[2.5rem] transition-all hover:border-blue-500/30">
+        <div class="px-8 h-20 flex justify-between items-center">
+            <div class="flex items-center gap-4 cursor-pointer group" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                <div class="w-11 h-11 gradient-bg rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(37,99,235,0.4)] group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-hands-holding-circle text-white text-xl"></i>
+                </div>
+                <span class="text-2xl font-extrabold tracking-tight text-white">जन-<span class="text-blue-400">Sahayak</span></span>
+            </div>
+            <div class="hidden md:flex items-center space-x-10">
+              
+                <button onclick="document.getElementById('solutions').scrollIntoView()" class="bg-white text-slate-900 px-7 py-2.5 rounded-full font-bold hover:bg-blue-600 hover:text-white transition-all duration-300 shadow-[0_0_15px_rgba(255,255,255,0.2)] hover:shadow-[0_0_20px_rgba(37,99,235,0.5)] transform hover:-translate-y-0.5">The Mission</button>
+                <button onclick="document.getElementById('solutions').scrollIntoView()" class="bg-white text-slate-900 px-7 py-2.5 rounded-full font-bold hover:bg-blue-600 hover:text-white transition-all duration-300 shadow-[0_0_15px_rgba(255,255,255,0.2)] hover:shadow-[0_0_20px_rgba(37,99,235,0.5)] transform hover:-translate-y-0.5">Features</button>
+               
+            </div>
+        </div>
+    </nav>
+
+   <header class="relative pt-48 pb-24 overflow-hidden bg-transparent">
+    <div class="absolute top-20 left-10 w-72 h-72 bg-blue-400 rounded-full mix-blend-multiply filter blur-[100px] opacity-30 animate-float"></div>
+    <div class="absolute top-40 right-10 w-72 h-72 bg-purple-400 rounded-full mix-blend-multiply filter blur-[100px] opacity-30 animate-float-delayed"></div>
+
+    <div class="max-w-5xl mx-auto px-6 relative z-10 text-center">
+        <h1 class="text-5xl md:text-6xl font-extrabold tracking-tighter mb-10 leading-tight">
+            जन-Sahayak: Empowering <br>
+            <span class="gradient-text">Communities through AI.</span>
+        </h1>
+        
+        <ul class="grid md:grid-cols-2 gap-x-8 gap-y-6 text-left max-w-4xl mx-auto mb-10 text-slate-700 font-medium bg-white/40 backdrop-blur-md p-8 rounded-3xl shadow-sm border border-white/60">
+            <li class="flex items-start gap-3">
+                <i class="fas fa-check-circle text-blue-500 mt-1 shrink-0 text-lg"></i>
+                <span class="text-sm md:text-base leading-relaxed">AI-powered community platform designed to support healthcare, mental wellness, and access to verified information.</span>
+            </li>
+            <li class="flex items-start gap-3">
+                <i class="fas fa-check-circle text-blue-500 mt-1 shrink-0 text-lg"></i>
+                <span class="text-sm md:text-base leading-relaxed">Provides reliable and fact-checked information to help reduce misinformation in society.</span>
+            </li>
+            <li class="flex items-start gap-3">
+                <i class="fas fa-check-circle text-blue-500 mt-1 shrink-0 text-lg"></i>
+                <span class="text-sm md:text-base leading-relaxed">Focuses on first-mile connectivity, ensuring essential services reach underserved and rural communities.</span>
+            </li>
+            <li class="flex items-start gap-3">
+                <i class="fas fa-check-circle text-blue-500 mt-1 shrink-0 text-lg"></i>
+                <span class="text-sm md:text-base leading-relaxed">Uses artificial intelligence to guide users toward appropriate resources, support, and services.</span>
+            </li>
+            <li class="flex items-start gap-3">
+                <i class="fas fa-check-circle text-blue-500 mt-1 shrink-0 text-lg"></i>
+                <span class="text-sm md:text-base leading-relaxed">Promotes inclusive and accessible healthcare awareness for people at the grassroots level.</span>
+            </li>
+            <li class="flex items-start gap-3">
+                <i class="fas fa-check-circle text-blue-500 mt-1 shrink-0 text-lg"></i>
+                <span class="text-sm md:text-base leading-relaxed">Aims to empower communities by bridging the gap between people and trustworthy information.</span>
+            </li>
+        </ul>
+    </div>
+</header>
+
+    <section id="mission" class="py-20 relative z-10">
+        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-8 text-center">
+            <div onclick="highlightAndOpen('med')" class="light-glass p-10 rounded-[2rem] hover:-translate-y-2 transition-transform duration-300 shadow-sm hover:shadow-xl cursor-pointer group flex flex-col items-center justify-between">
+                <div>
+                    <div class="w-14 h-14 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform"><i class="fas fa-earth-americas text-2xl"></i></div>
+                    <h4 class="text-6xl font-extrabold text-slate-900 mb-3 tracking-tight">4B<span class="text-blue-600">+</span></h4>
+                    <p class="text-slate-500 font-medium text-lg">People globally lack primary care access.</p>
+                </div>
+                <span class="inline-block mt-6 text-sm font-bold text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2">View Solution <i class="fas fa-arrow-right"></i></span>
+            </div>
+            
+            <div onclick="highlightAndOpen('fact')" class="light-glass p-10 rounded-[2rem] hover:-translate-y-2 transition-transform duration-300 shadow-sm hover:shadow-xl cursor-pointer group flex flex-col items-center justify-between">
+                <div>
+                    <div class="w-14 h-14 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform"><i class="fas fa-tower-cell text-2xl"></i></div>
+                    <h4 class="text-6xl font-extrabold text-slate-900 mb-3 tracking-tight">70<span class="text-purple-600">%</span></h4>
+                    <p class="text-slate-500 font-medium text-lg">Of rural news is unverified or misleading.</p>
+                </div>
+                <span class="inline-block mt-6 text-sm font-bold text-purple-600 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2">View Solution <i class="fas fa-arrow-right"></i></span>
+            </div>
+            
+            <div onclick="highlightAndOpen('health')" class="light-glass p-10 rounded-[2rem] hover:-translate-y-2 transition-transform duration-300 shadow-sm hover:shadow-xl cursor-pointer group flex flex-col items-center justify-between">
+                <div>
+                    <div class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform"><i class="fas fa-heart-pulse text-2xl"></i></div>
+                    <h4 class="text-6xl font-extrabold text-slate-900 mb-3 tracking-tight">1 <span class="text-emerald-600 text-4xl">in</span> 4</h4>
+                    <p class="text-slate-500 font-medium text-lg">Require immediate mental health support.</p>
+                </div>
+                <span class="inline-block mt-6 text-sm font-bold text-emerald-600 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2">View Solution <i class="fas fa-arrow-right"></i></span>
+            </div>
+        </div>
+    </section>
+
+    <section id="solutions" class="py-24 bg-transparent relative z-10">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-20">
+                <h2 class="text-4xl md:text-5xl font-extrabold mb-6">The Impact Ecosystem</h2>
+                <p class="text-slate-500 text-lg max-w-2xl mx-auto">Select a module below to explore its specific capabilities and interact with the live RAG pipeline.</p>
+            </div>
+            
+            <div class="grid lg:grid-cols-3 gap-8">
+                
+                <div class="feature-card bg-white p-10 flex flex-col items-center text-center shadow-[0_15px_40px_-15px_rgba(0,0,0,0.1),_0_6px_0_0_#FB923C] hover:shadow-[0_20px_40px_-15px_rgba(251,146,60,0.3),_0_6px_0_0_#FB923C] relative overflow-hidden">
+                    <svg width="72" height="72" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" class="mb-5">
+                        <circle cx="28" cy="28" r="18" fill="#E2E8F0" stroke="#334155" stroke-width="4"/>
+                        <circle cx="25" cy="25" r="10" fill="#F8FAFC" />
+                        <path d="M41 41L54 54" stroke="#F97316" stroke-width="8" stroke-linecap="round"/>
+                        <path d="M41 41L54 54" stroke="#EA580C" stroke-width="4" stroke-linecap="round"/>
+                        <circle cx="28" cy="28" r="18" stroke="#334155" stroke-width="4"/>
+                    </svg>
+                    <h3 class="text-[22px] font-extrabold text-[#1e293b] mb-3">Fact Checker</h3>
+                    <p class="text-[#64748b] text-[15px] mb-8 flex-grow leading-relaxed">Stop rumors. Verify news and schemes instantly.</p>
+                    <div class="w-full space-y-4 relative z-10">
+                        <button onclick="openFeature('fact')" class="w-full text-orange-500 text-xs font-bold uppercase tracking-widest hover:text-orange-700 transition-colors mb-2 flex items-center justify-center gap-2">Technical Info <i class="fas fa-arrow-right"></i></button>
+                        <button onclick="window.location.href='fact.html'" class="w-full bg-slate-900 text-white py-3.5 rounded-xl font-bold hover:bg-orange-500 hover:shadow-lg hover:shadow-orange-200 transition-all">Launch</button>
+                        
+                        <div id="demo-fact" class="hidden mt-4 bg-slate-50 p-4 rounded-2xl border border-slate-200 shadow-inner text-left">
+                            <textarea id="input-fact" class="w-full border-0 bg-white shadow-sm p-4 rounded-xl text-sm focus:ring-2 focus:ring-orange-400 focus:outline-none resize-none" rows="2" placeholder="Paste headline or claim..."></textarea>
+                            <button onclick="runDemo('fact', 'orange')" class="w-full mt-3 bg-orange-500 text-white py-2.5 rounded-xl text-sm font-semibold hover:bg-orange-600 transition-colors flex items-center justify-center gap-2"><i class="fas fa-search text-xs"></i> Verify Claim</button>
+                            <div id="output-box-fact" class="hidden p-4 bg-slate-900 text-orange-300 rounded-xl text-xs font-mono mt-3 shadow-lg leading-relaxed"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="feature-card bg-white p-10 flex flex-col items-center text-center shadow-[0_15px_40px_-15px_rgba(0,0,0,0.1),_0_6px_0_0_#4ADE80] hover:shadow-[0_20px_40px_-15px_rgba(74,222,128,0.3),_0_6px_0_0_#4ADE80] relative overflow-hidden">
+                    <svg width="72" height="72" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" class="mb-5">
+                        <path d="M14 60C14 50 22 42 32 42C42 42 50 50 50 60" fill="#0284C7"/>
+                        <path d="M30 42L32 50L34 42" fill="#E0F2FE"/>
+                        <rect x="31" y="44" width="2" height="16" fill="#0369A1"/>
+                        <circle cx="32" cy="26" r="12" fill="#FDBA74"/>
+                        <path d="M20 22C20 16 26 10 32 10C38 10 44 16 44 22L42 24C42 24 38 18 32 18C26 18 22 24 22 24L20 22Z" fill="#78350F"/>
+                        <rect x="26" y="24" width="4" height="2" fill="#92400E" rx="1"/>
+                        <rect x="34" y="24" width="4" height="2" fill="#92400E" rx="1"/>
+                        <path d="M32 30V32" stroke="#B45309" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M28 34H36" stroke="#92400E" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    <h3 class="text-[22px] font-extrabold text-[#1e293b] mb-3">Mental Health</h3>
+                    <p class="text-[#64748b] text-[15px] mb-8 flex-grow leading-relaxed">Talk to our AI Therapist or book a professional session.</p>
+                    <div class="w-full space-y-4 relative z-10">
+                        <button onclick="openFeature('health')" class="w-full text-emerald-500 text-xs font-bold uppercase tracking-widest hover:text-emerald-700 transition-colors mb-2 flex items-center justify-center gap-2">Technical Info <i class="fas fa-arrow-right"></i></button>
+                        <button onclick="window.location.href='health.html'" class="w-full bg-slate-900 text-white py-3.5 rounded-xl font-bold hover:bg-emerald-500 hover:shadow-lg hover:shadow-emerald-200 transition-all">Launch</button>
+                        
+                        <div id="demo-health" class="hidden mt-4 bg-slate-50 p-4 rounded-2xl border border-slate-200 shadow-inner text-left">
+                            <textarea id="input-health" class="w-full border-0 bg-white shadow-sm p-4 rounded-xl text-sm focus:ring-2 focus:ring-emerald-400 focus:outline-none resize-none" rows="2" placeholder="How are you feeling today?"></textarea>
+                            <button onclick="runDemo('health', 'emerald')" class="w-full mt-3 bg-emerald-500 text-white py-2.5 rounded-xl text-sm font-semibold hover:bg-emerald-600 transition-colors flex items-center justify-center gap-2"><i class="fas fa-sparkles text-xs"></i> Analyze Emotion</button>
+                            <div id="output-box-health" class="hidden p-4 bg-slate-900 text-emerald-300 rounded-xl text-xs font-mono mt-3 shadow-lg leading-relaxed"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="feature-card bg-white p-10 flex flex-col items-center text-center shadow-[0_15px_40px_-15px_rgba(0,0,0,0.1),_0_6px_0_0_#60A5FA] hover:shadow-[0_20px_40px_-15px_rgba(96,165,250,0.3),_0_6px_0_0_#60A5FA] relative overflow-hidden">
+                    <svg width="72" height="72" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" class="mb-5">
+                        <circle cx="32" cy="32" r="24" fill="url(#paint0_linear)"/>
+                        <rect x="29" y="28" width="6" height="14" rx="2" fill="white"/>
+                        <circle cx="32" cy="20" r="3" fill="white"/>
+                        <defs>
+                            <linearGradient id="paint0_linear" x1="32" y1="8" x2="32" y2="56" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#FF8A8A"/>
+                            <stop offset="1" stop-color="#FF2E63"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <h3 class="text-[22px] font-extrabold text-[#1e293b] mb-3">Telemedicine</h3>
+                    <p class="text-[#64748b] text-[15px] mb-8 flex-grow leading-relaxed">First-aid guides and medicine information.</p>
+                    <div class="w-full space-y-4 relative z-10">
+                        <button onclick="openFeature('med')" class="w-full text-blue-500 text-xs font-bold uppercase tracking-widest hover:text-blue-700 transition-colors mb-2 flex items-center justify-center gap-2">Technical Info <i class="fas fa-arrow-right"></i></button>
+                        <button onclick="window.location.href='med.html'" class="w-full bg-slate-900 text-white py-3.5 rounded-xl font-bold hover:bg-blue-500 hover:shadow-lg hover:shadow-blue-200 transition-all">Launch</button>
+                        
+                        <div id="demo-med" class="hidden mt-4 bg-slate-50 p-4 rounded-2xl border border-slate-200 shadow-inner text-left">
+                            <textarea id="input-med" class="w-full border-0 bg-white shadow-sm p-4 rounded-xl text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none resize-none" rows="2" placeholder="Describe patient symptoms..."></textarea>
+                            <button onclick="runDemo('med', 'blue')" class="w-full mt-3 bg-blue-500 text-white py-2.5 rounded-xl text-sm font-semibold hover:bg-blue-600 transition-colors flex items-center justify-center gap-2"><i class="fas fa-stethoscope text-xs"></i> Run Triage</button>
+                            <div id="output-box-med" class="hidden p-4 bg-slate-900 text-blue-300 rounded-xl text-xs font-mono mt-3 shadow-lg leading-relaxed"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <div id="feature-overlay" class="fixed inset-0 z-[100] bg-slate-900/40 backdrop-blur-md hidden-modal overflow-y-auto flex items-center justify-center p-4">
+        <div class="modal-content bg-white max-w-4xl w-full rounded-[2.5rem] shadow-2xl overflow-hidden relative">
+            <button onclick="closeFeature()" class="absolute top-8 right-8 w-10 h-10 bg-slate-100 text-slate-500 rounded-full hover:bg-slate-200 hover:text-slate-900 transition-colors flex items-center justify-center z-10">
+                <i class="fas fa-times text-lg"></i>
+            </button>
+            <div class="px-8 py-12 md:px-14">
+                <div id="feature-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-slate-950 text-slate-400 py-16 mt-12 relative overflow-hidden">
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[80%] h-[1px] bg-gradient-to-r from-transparent via-blue-500/50 to-transparent"></div>
+        
+        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 border-b border-slate-900/50 pb-12 relative z-10">
+            <div>
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center shadow-lg"><i class="fas fa-hands-holding-circle text-white text-sm"></i></div>
+                    <span class="text-2xl font-bold text-white tracking-tight">जन-Sahayak</span>
+                </div>
+                <p class="max-w-sm text-sm leading-relaxed">An open-source initiative dedicated to bridging digital inequality through purposeful, safe, and verifiable AI.</p>
+            </div>
+            <div class="flex md:justify-end gap-8 text-sm font-medium items-end">
+                <a href="#" class="hover:text-blue-400 transition-colors">Privacy Policy</a>
+                <a href="#" class="hover:text-blue-400 transition-colors">GitHub Repo</a>
+                <a href="#" class="hover:text-blue-400 transition-colors">Read Whitepaper</a>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-6 pt-8 flex justify-between items-center text-xs relative z-10">
+            <span>© 2026 जन-Sahayak. All rights reserved.</span>
+            <span class="flex items-center gap-1">Made with <i class="fas fa-heart text-red-500 mx-1 animate-pulse"></i> for the world</span>
+        </div>
+    </footer>
+
+    <script>
+        const features = {
+            fact: {
+                title: "Fact Checker",
+                color: "orange",
+                icon: "fa-shield-halved",
+                body: `
+                    <div class="space-y-10">
+                        <section>
+                            <h3 class="text-3xl font-extrabold mb-4 text-slate-900">Fighting Misinformation with RAG</h3>
+                            <p class="text-slate-600 text-lg leading-relaxed">Our Engine eliminates LLM hallucinations by forcing the AI to verify claims against a curated database of global news sources, scientific journals, and government archives before drafting a response.</p>
+                        </section>
+                        <div class="space-y-4">
+                            <div class="flex gap-6 items-start p-6 bg-white border border-slate-200 hover:border-orange-300 rounded-[1.5rem] shadow-sm hover:shadow-md transition-all">
+                                <div class="w-14 h-14 bg-orange-50 rounded-2xl flex items-center justify-center shrink-0 border border-orange-100"><i class="fas fa-satellite-dish text-orange-500 text-xl"></i></div>
+                                <div><h5 class="font-bold text-lg mb-1">Real-time Verification</h5><p class="text-sm text-slate-500 leading-relaxed">Cross-references user inputs with live APIs from Reuters, WHO, and localized government archives.</p></div>
+                            </div>
+                            <div class="flex gap-6 items-start p-6 bg-white border border-slate-200 hover:border-orange-300 rounded-[1.5rem] shadow-sm hover:shadow-md transition-all">
+                                <div class="w-14 h-14 bg-orange-50 rounded-2xl flex items-center justify-center shrink-0 border border-orange-100"><i class="fas fa-link text-orange-500 text-xl"></i></div>
+                                <div><h5 class="font-bold text-lg mb-1">Source Attribution</h5><p class="text-sm text-slate-500 leading-relaxed">Every response injects verified links to primary sources directly into the chat, empowering user critical thinking.</p></div>
+                            </div>
+                        </div>
+                    </div>`
+            },
+            health: {
+                title: "Mental Health Support",
+                color: "emerald",
+                icon: "fa-brain",
+                body: `
+                    <div class="space-y-10">
+                        <section>
+                            <h3 class="text-3xl font-extrabold mb-4 text-slate-900">Inclusive Mental Health Support</h3>
+                            <p class="text-slate-600 text-lg leading-relaxed">The AI Hub leverages a multi-layer RAG architecture to provide immediate emotional support in regions with low professional medical density. It prioritizes emotional safety and contextual understanding.</p>
+                        </section>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="p-8 bg-emerald-50/50 rounded-[2rem] border border-emerald-100 hover:shadow-lg transition-shadow">
+                                <div class="w-12 h-12 bg-white text-emerald-500 rounded-xl flex items-center justify-center shadow-sm mb-5"><i class="fas fa-language text-xl"></i></div>
+                                <h4 class="font-bold text-emerald-900 mb-2 text-xl">Sentiment Analysis</h4>
+                                <p class="text-sm text-emerald-800/80 leading-relaxed">Advanced detection of distress signals in 12+ regional languages to provide culturally and context-sensitive guidance.</p>
+                            </div>
+                            <div class="p-8 bg-slate-900 text-white rounded-[2rem] shadow-xl relative overflow-hidden">
+                                <div class="absolute -right-4 -bottom-4 opacity-10"><i class="fas fa-leaf text-9xl"></i></div>
+                                <div class="w-12 h-12 bg-slate-800 text-emerald-400 rounded-xl flex items-center justify-center border border-slate-700 mb-5 relative z-10"><i class="fas fa-spa text-xl"></i></div>
+                                <h4 class="font-bold text-emerald-400 mb-2 text-xl relative z-10">CBT Integration</h4>
+                                <p class="text-sm opacity-80 leading-relaxed relative z-10">Automated Cognitive Behavioral Therapy frameworks provide grounding techniques for immediate, actionable anxiety relief.</p>
+                            </div>
+                        </div>
+                    </div>`
+            },
+            med: {
+                title: "Telemedicine Platform",
+                color: "blue",
+                icon: "fa-kit-medical",
+                body: `
+                    <div class="space-y-10">
+                        <section>
+                            <h3 class="text-3xl font-extrabold mb-4 text-slate-900">Bridging the Healthcare Gap</h3>
+                            <p class="text-slate-600 text-lg leading-relaxed">Our triage logic is optimized for first-mile healthcare delivery. It acts as an intelligent intermediary, providing WHO-compliant first-aid guidance where physical infrastructure is completely missing.</p>
+                        </section>
+                        <div class="bg-gradient-to-br from-blue-50 to-white p-10 rounded-[2.5rem] border border-blue-100 shadow-sm relative overflow-hidden">
+                            <div class="absolute top-0 right-0 w-64 h-64 bg-blue-100 rounded-full mix-blend-multiply filter blur-[50px] opacity-40"></div>
+                            <h4 class="text-2xl font-bold text-blue-900 mb-6 relative z-10">Strict Triage Protocol</h4>
+                            <ul class="space-y-5 relative z-10">
+                                <li class="flex items-center gap-4 text-blue-800 bg-white p-4 rounded-xl shadow-sm border border-blue-50"><div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600"><i class="fas fa-check text-sm"></i></div> <span class="font-medium">Non-diagnostic symptom tracking</span></li>
+                                <li class="flex items-center gap-4 text-blue-800 bg-white p-4 rounded-xl shadow-sm border border-blue-50"><div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600"><i class="fas fa-bolt text-sm"></i></div> <span class="font-medium">High-risk symptom escalation logic</span></li>
+                                <li class="flex items-center gap-4 text-blue-800 bg-white p-4 rounded-xl shadow-sm border border-blue-50"><div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600"><i class="fas fa-wifi text-sm"></i></div> <span class="font-medium">Offline-first database for remote sync</span></li>
+                            </ul>
+                        </div>
+                    </div>`
+            }
+        };
+
+        function highlightAndOpen(mode) {
+            // 1. Smoothly scroll down to the solutions section
+            const solutionsSection = document.getElementById('solutions');
+            solutionsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            
+            // 2. Wait for the scroll to finish, then pop open the relevant technical modal
+            setTimeout(() => {
+                openFeature(mode);
+            }, 600); 
+        }
+
+        function openFeature(mode) {
+            const data = features[mode];
+            const content = document.getElementById('feature-content');
+            content.innerHTML = `
+                <div class="flex flex-col md:flex-row items-start md:items-center gap-6 mb-12">
+                    <div class="w-24 h-24 bg-${data.color}-50 text-${data.color}-500 rounded-[2rem] flex items-center justify-center border border-${data.color}-100 shrink-0 shadow-inner">
+                        <i class="fas ${data.icon} text-4xl"></i>
+                    </div>
+                    <div>
+                        <span class="inline-block px-3 py-1 bg-${data.color}-100 text-${data.color}-700 text-xs font-bold uppercase tracking-widest rounded-full mb-3">Documentation & Logic</span>
+                        <h1 class="text-4xl md:text-5xl font-black text-slate-900 tracking-tight">${data.title}</h1>
+                    </div>
+                </div>
+                ${data.body}
+            `;
+            
+            const overlay = document.getElementById('feature-overlay');
+            overlay.classList.remove('hidden-modal');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeFeature() {
+            const overlay = document.getElementById('feature-overlay');
+            overlay.classList.add('hidden-modal');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal on outside click
+        document.getElementById('feature-overlay').addEventListener('click', function(e) {
+            if (e.target === this) closeFeature();
+        });
+
+        function toggleDemo(mode) {
+            const demoArea = document.getElementById(`demo-${mode}`);
+            if (demoArea.classList.contains('hidden')) {
+                demoArea.classList.remove('hidden');
+                // Small animation trick
+                demoArea.style.opacity = 0;
+                demoArea.style.transform = 'translateY(-10px)';
+                setTimeout(() => {
+                    demoArea.style.transition = 'all 0.3s ease';
+                    demoArea.style.opacity = 1;
+                    demoArea.style.transform = 'translateY(0)';
+                }, 10);
+            } else {
+                demoArea.classList.add('hidden');
+            }
+        }
+
+        async function runDemo(mode, color) {
+            const outBox = document.getElementById(`output-box-${mode}`);
+            const inputVal = document.getElementById(`input-${mode}`).value || "No input provided.";
+            
+            outBox.classList.remove('hidden');
+            outBox.innerHTML = `> <span class="animate-pulse text-${color}-400">Initializing pipeline...</span>`;
+            
+            // Simulate typing and processing
+            setTimeout(() => {
+                outBox.innerHTML = `> User: "${inputVal}"<br>> <span class="animate-pulse text-${color}-400">Querying vector database...</span>`;
+            }, 600);
+            
+            setTimeout(() => {
+                outBox.innerHTML = `> User: "${inputVal}"<br>> Context retrieved [200ms]<br>> <span class="animate-pulse text-${color}-400">Generating safe response...</span>`;
+            }, 1400);
+
+            setTimeout(() => {
+                outBox.innerHTML = `
+                    <div class="text-slate-400 mb-2">--- PIPELINE SUCCESS ---</div>
+                    <strong class="text-white">Output:</strong> Response generated securely using local fine-tuned models.<br>
+                    <span class="text-${color}-300 mt-2 block">> Safety Guardrails: Passed ✓</span>
+                `;
+            }, 2200);
+        }
+    </script>
+</body>
+</html>
