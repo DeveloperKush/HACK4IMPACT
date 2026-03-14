@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mental Health Support | जन-Sahayak</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f0fdf4; }
+        .bg-dots-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1;
+            background-image: radial-gradient(rgba(167, 243, 208, 0.4) 1.5px, transparent 1.5px);
+            background-size: 28px 28px; background-position: center center;
+        }
+        
+        /* Chat Bubble Styles */
+        .chat-bubble { max-width: 80%; padding: 1rem 1.25rem; border-radius: 1.5rem; line-height: 1.5; font-size: 0.95rem; }
+        .chat-bot { border-bottom-left-radius: 0.25rem; background: white; color: #1e293b; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+        .chat-user { border-bottom-right-radius: 0.25rem; background: #10b981; color: white; margin-left: auto; box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2); }
+        .chat-peer { border-bottom-left-radius: 0.25rem; background: #f8fafc; color: #334155; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-up { animation: fadeInUp 0.4s ease forwards; }
+        
+        /* Custom Scrollbar for inner elements */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="text-slate-900 h-screen flex flex-col overflow-hidden">
+    <div class="bg-dots-overlay"></div>
+
+    <nav class="w-full bg-white/80 backdrop-blur-md border-b border-emerald-100 flex-none z-50">
+        <div class="max-w-4xl mx-auto px-6 h-16 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-lg flex items-center justify-center shadow-md">
+                    <i class="fas fa-brain text-white text-sm"></i>
+                </div>
+                <span class="font-extrabold tracking-tight text-slate-800">जन-Sahayak <span class="text-slate-400 font-normal">/ Support AI</span></span>
+            </div>
+            <a href="new.html" class="text-sm font-bold text-slate-500 hover:text-emerald-600 transition-colors"><i class="fas fa-arrow-left mr-2"></i> Exit Session</a>
+        </div>
+    </nav>
+
+    <main class="flex-grow max-w-4xl mx-auto w-full p-6 flex flex-col h-full overflow-hidden">
+        
+        <div class="flex justify-center mb-4 flex-none">
+            <div class="bg-white p-1.5 rounded-xl flex gap-1 shadow-sm border border-slate-200">
+                <button onclick="switchTab('therapist')" id="btn-therapist" class="px-6 py-2.5 rounded-lg text-sm font-bold text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition-colors flex items-center gap-2">
+                    <i class="fas fa-comment-medical"></i> Therapist
+                </button>
+                <button onclick="switchTab('diary')" id="btn-diary" class="px-6 py-2.5 rounded-lg text-sm font-bold text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition-colors flex items-center gap-2">
+                    <i class="fas fa-book"></i> Diary
+                </button>
+                <button onclick="switchTab('peer')" id="btn-peer" class="px-6 py-2.5 rounded-lg text-sm font-bold bg-emerald-100 text-emerald-700 shadow-sm flex items-center gap-2">
+                    🤝 Peer Chat
+                </button>
+            </div>
+        </div>
+
+        <div id="tab-therapist" class="hidden flex-col h-full overflow-hidden">
+            <div class="bg-emerald-50 text-emerald-800 text-xs font-bold uppercase tracking-widest text-center py-2 rounded-full mb-6 mx-auto px-6 border border-emerald-200 flex-none">
+                <i class="fas fa-lock mr-2"></i> End-to-End Encrypted Session
+            </div>
+
+            <div id="chatBox" class="flex-grow overflow-y-auto space-y-6 pr-2 pb-4">
+                <div class="flex gap-3">
+                    <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0 mt-1"><i class="fas fa-robot text-xs"></i></div>
+                    <div class="chat-bubble chat-bot">
+                        Hello. I am the Jan-Sahayak wellness assistant. This is a safe space. How are you feeling today? You can share whatever is on your mind.
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex-none pt-4 pb-2">
+                <div class="relative bg-white rounded-[2rem] shadow-lg border border-slate-200 p-2 flex items-center">
+                    <input type="text" id="userInput" class="w-full bg-transparent pl-4 pr-12 py-3 focus:outline-none text-slate-700" placeholder="Type your message here..." onkeypress="if(event.key === 'Enter') sendMessage()">
+                    <button onclick="sendMessage()" class="absolute right-3 w-10 h-10 bg-emerald-500 text-white rounded-full flex items-center justify-center hover:bg-emerald-600 transition-colors shadow-md">
+                        <i class="fas fa-paper-plane text-sm"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-diary" class="hidden flex-col h-full overflow-y-auto pb-4 gap-4">
+            
+            <div class="bg-white rounded-[1.5rem] p-6 shadow-xl shadow-emerald-900/5 w-full border border-slate-200 shrink-0">
+                <h2 class="text-slate-900 text-xl font-bold mb-2 flex items-center gap-2">📓 Anonymous Diary</h2>
+                <p class="text-slate-500 text-sm mb-6">Your entries are saved anonymously using a random ID. No personal information is collected.</p>
+                
+                <div class="flex flex-wrap gap-2.5 mb-5" id="mood-selector">
+                    <button onclick="setMood(this, '😊 Happy')" class="mood-btn px-4 py-1.5 rounded-full border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 transition-colors text-sm flex items-center gap-2">😊 Happy</button>
+                    <button onclick="setMood(this, '😐 Neutral')" class="mood-btn px-4 py-1.5 rounded-full border border-emerald-500 bg-emerald-500 text-white transition-colors text-sm flex items-center gap-2">😐 Neutral</button>
+                    <button onclick="setMood(this, '😢 Sad')" class="mood-btn px-4 py-1.5 rounded-full border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 transition-colors text-sm flex items-center gap-2">😢 Sad</button>
+                    <button onclick="setMood(this, '😰 Anxious')" class="mood-btn px-4 py-1.5 rounded-full border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 transition-colors text-sm flex items-center gap-2">😰 Anxious</button>
+                    <button onclick="setMood(this, '😡 Angry')" class="mood-btn px-4 py-1.5 rounded-full border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 transition-colors text-sm flex items-center gap-2">😡 Angry</button>
+                    <button onclick="setMood(this, '🙏 Grateful')" class="mood-btn px-4 py-1.5 rounded-full border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 transition-colors text-sm flex items-center gap-2">🙏 Grateful</button>
+                </div>
+
+                <textarea id="diaryText" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-slate-700 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 resize-none placeholder-slate-400 mb-4" rows="4" placeholder="Write what's on your mind..."></textarea>
+                <button onclick="saveEntry()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3.5 rounded-xl transition-colors shadow-lg shadow-emerald-500/30 flex justify-center items-center gap-2 text-[15px]">📝 Save Entry</button>
+            </div>
+
+            <div class="bg-white rounded-[1.5rem] p-6 shadow-xl shadow-emerald-900/5 w-full border border-slate-200 flex flex-col flex-grow min-h-[250px]">
+                <h2 class="text-slate-900 text-xl font-bold mb-6 flex items-center gap-2">📖 Your Entries</h2>
+                <div id="diaryEntriesList" class="flex-grow flex flex-col gap-3">
+                    <div id="emptyState" class="flex-grow flex flex-col items-center justify-center text-center opacity-70 py-6">
+                        <span class="text-5xl mb-4 grayscale opacity-50">📓</span>
+                        <p class="text-slate-500 text-[15px]">Your anonymous diary is empty. Start writing your first entry above.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-peer" class="flex flex-col h-full overflow-hidden w-full max-w-2xl mx-auto">
+            
+            <div id="peer-landing" class="bg-white rounded-[1.5rem] p-8 shadow-xl shadow-emerald-900/5 border border-slate-200 mt-4 flex flex-col items-center justify-center min-h-[400px] animate-fade-in-up">
+                <div class="w-20 h-20 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center text-3xl mb-6 shadow-inner border border-emerald-100">
+                    🤝
+                </div>
+                <h2 class="text-slate-900 text-2xl font-black mb-3 text-center">Anonymous Peer Support</h2>
+                <p class="text-slate-500 text-[15px] mb-8 text-center max-w-sm leading-relaxed">Connect securely and anonymously with someone who might understand what you're going through. Be kind and supportive.</p>
+                
+                <button id="findPeerBtn" onclick="startPeerSearch()" class="w-full max-w-xs bg-emerald-500 text-white font-bold py-4 rounded-xl hover:bg-emerald-600 transition-colors shadow-lg shadow-emerald-500/30 flex justify-center items-center gap-2 text-lg">
+                    Find a Peer
+                </button>
+
+                <div id="peerLoading" class="hidden flex-col items-center mt-6">
+                    <i class="fas fa-circle-notch fa-spin text-3xl text-emerald-500 mb-3"></i>
+                    <p class="text-slate-600 font-medium animate-pulse">Searching for an available listener...</p>
+                </div>
+            </div>
+
+            <div id="peer-chat-interface" class="hidden flex-col h-full bg-white rounded-[1.5rem] shadow-xl shadow-emerald-900/5 border border-slate-200 mt-2 overflow-hidden animate-fade-in-up">
+                
+                <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50 flex-none">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shadow-sm border border-emerald-200">
+                            <i class="fas fa-user-secret"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-sm">Anonymous Peer</h3>
+                            <p class="text-xs text-emerald-500 font-bold flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse"></span> Connected</p>
+                        </div>
+                    </div>
+                    <button onclick="disconnectPeer()" class="text-xs font-bold bg-red-50 text-red-600 px-4 py-2 rounded-lg hover:bg-red-100 border border-red-100 transition-colors">
+                        Disconnect
+                    </button>
+                </div>
+
+                <div id="peerChatBox" class="flex-grow overflow-y-auto p-6 space-y-4 bg-slate-50/30">
+                    <div class="text-center text-xs font-bold text-slate-400 uppercase tracking-widest my-4">You are now chatting with a random peer. Say hi!</div>
+                </div>
+
+                <div class="p-4 bg-white border-t border-slate-100 flex-none">
+                    <div class="relative flex items-center">
+                        <input type="text" id="peerInput" class="w-full bg-slate-100 border border-slate-200 rounded-full pl-5 pr-14 py-3.5 focus:outline-none focus:ring-2 focus:ring-emerald-400 text-sm text-slate-700" placeholder="Type a message..." onkeypress="if(event.key === 'Enter') sendPeerMsg()">
+                        <button onclick="sendPeerMsg()" class="absolute right-2 w-10 h-10 bg-emerald-500 text-white rounded-full flex items-center justify-center hover:bg-emerald-600 transition-colors shadow-md">
+                            <i class="fas fa-paper-plane text-xs mt-0.5 mr-0.5"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <script>
+        // --- Navigation Logic ---
+        function switchTab(tabId) {
+            document.getElementById('tab-therapist').style.display = 'none';
+            document.getElementById('tab-diary').style.display = 'none';
+            document.getElementById('tab-peer').style.display = 'none';
+            
+            const btns = ['btn-therapist', 'btn-diary', 'btn-peer'];
+            btns.forEach(id => {
+                document.getElementById(id).className = "px-6 py-2.5 rounded-lg text-sm font-bold text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition-colors flex items-center gap-2";
+            });
+
+            if (tabId === 'therapist') {
+                document.getElementById('tab-therapist').style.display = 'flex';
+                document.getElementById('btn-therapist').className = "px-6 py-2.5 rounded-lg text-sm font-bold bg-emerald-100 text-emerald-700 shadow-sm flex items-center gap-2";
+            } else if (tabId === 'diary') {
+                document.getElementById('tab-diary').style.display = 'flex';
+                document.getElementById('btn-diary').className = "px-6 py-2.5 rounded-lg text-sm font-bold bg-emerald-100 text-emerald-700 shadow-sm flex items-center gap-2";
+            } else if (tabId === 'peer') {
+                document.getElementById('tab-peer').style.display = 'flex';
+                document.getElementById('btn-peer').className = "px-6 py-2.5 rounded-lg text-sm font-bold bg-emerald-100 text-emerald-700 shadow-sm flex items-center gap-2";
+            }
+        }
+        
+        // Set Default Tab to Peer Support
+        switchTab('peer');
+
+        // --- UUID Initialization ---
+        const diaryUUID = localStorage.getItem('diary_uuid') || (()=>{
+            const u = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+                const r = Math.random() * 16 | 0; return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+            });
+            localStorage.setItem('diary_uuid', u);
+            return u;
+        })();
+
+        // --- Therapist Chat Logic ---
+        async function sendMessage() {
+            const input = document.getElementById('userInput');
+            const chatBox = document.getElementById('chatBox');
+            const msg = input.value.trim();
+            if (!msg) return;
+
+            chatBox.innerHTML += `<div class="flex flex-col"><div class="chat-bubble chat-user">${msg.replace(/</g, "&lt;")}</div></div>`;
+            input.value = '';
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            const typingId = 'typing-' + Date.now();
+            chatBox.innerHTML += `
+                <div id="${typingId}" class="flex gap-3 mt-2">
+                    <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0 mt-1"><i class="fas fa-ellipsis h text-xs"></i></div>
+                    <div class="chat-bubble chat-bot text-slate-400">Typing...</div>
+                </div>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            try {
+                const res = await fetch('/mental-health/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: msg, session_id: diaryUUID }),
+                });
+                const data = await res.json();
+                
+                document.getElementById(typingId)?.remove();
+                
+                if(data.error) {
+                    chatBox.innerHTML += `
+                        <div class="flex gap-3 mt-2">
+                            <div class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center text-red-600 shrink-0 mt-1"><i class="fas fa-exclamation-triangle text-xs"></i></div>
+                            <div class="chat-bubble chat-bot text-red-600 bg-red-50 border-red-200">System Error: ${data.error}</div>
+                        </div>`;
+                } else if(data.is_crisis) {
+                     chatBox.innerHTML += `
+                        <div class="flex gap-3 mt-2">
+                            <div class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center text-red-600 shrink-0 mt-1"><i class="fas fa-heart text-xs"></i></div>
+                            <div class="chat-bubble chat-bot border-red-300 border-2">
+                                <strong>Important:</strong> ${data.response.replace(/\n/g, '<br/>')}
+                            </div>
+                        </div>`;
+                } else {
+                    chatBox.innerHTML += `
+                        <div class="flex gap-3 mt-2">
+                            <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0 mt-1"><i class="fas fa-robot text-xs"></i></div>
+                            <div class="chat-bubble chat-bot">
+                                ${data.response.replace(/\n/g, '<br/>')}
+                            </div>
+                        </div>`;
+                }
+                chatBox.scrollTop = chatBox.scrollHeight;
+            } catch (err) {
+                 document.getElementById(typingId)?.remove();
+                 chatBox.innerHTML += `
+                        <div class="flex gap-3 mt-2">
+                            <div class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center text-red-600 shrink-0 mt-1"><i class="fas fa-plug text-xs"></i></div>
+                            <div class="chat-bubble chat-bot text-red-600 bg-red-50 border-red-200">Connection error: ${err.message}</div>
+                        </div>`;
+                 chatBox.scrollTop = chatBox.scrollHeight;
+            }
+        }
+
+        // --- Diary Logic ---
+        let currentMood = 'neutral';
+        let moodLabel = '😐 Neutral';
+
+        function setMood(btnElement, label) {
+            moodLabel = label;
+            // Extract the mood slug from the label (e.g., "😊 Happy" -> "happy")
+            currentMood = label.substring(3).toLowerCase(); 
+            
+            const buttons = document.querySelectorAll('.mood-btn');
+            buttons.forEach(btn => {
+                btn.className = "mood-btn px-4 py-1.5 rounded-full border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 transition-colors text-sm flex items-center gap-2";
+            });
+            btnElement.className = "mood-btn px-4 py-1.5 rounded-full border border-emerald-500 bg-emerald-500 text-white transition-colors text-sm flex items-center gap-2";
+        }
+
+        async function saveEntry() {
+            const textInput = document.getElementById('diaryText');
+            const text = textInput.value.trim();
+            if (!text) return; 
+
+            const btn = document.querySelector('button[onclick="saveEntry()"]');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = 'Saving...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('/diary/save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ uuid: diaryUUID, entry: text, mood: currentMood })
+                });
+                
+                if (res.ok) {
+                    textInput.value = '';
+                    loadDiary(); // Reload to show the new entry
+                } else {
+                    alert('Failed to save entry.');
+                }
+            } catch (err) {
+                 alert('Network error saving entry.');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        async function loadDiary() {
+             try {
+                const res = await fetch(`/diary/${diaryUUID}`);
+                const data = await res.json();
+                
+                const list = document.getElementById('diaryEntriesList');
+                
+                if (!data.entries || data.entries.length === 0) {
+                    list.innerHTML = `
+                        <div id="emptyState" class="flex-grow flex flex-col items-center justify-center text-center opacity-70 py-6">
+                            <span class="text-5xl mb-4 grayscale opacity-50">📓</span>
+                            <p class="text-slate-500 text-[15px]">Your anonymous diary is empty. Start writing your first entry above.</p>
+                        </div>`;
+                    return;
+                }
+
+                const moodEmojis = { happy: '😊 Happy', sad: '😢 Sad', anxious: '😰 Anxious', angry: '😡 Angry', neutral: '😐 Neutral', grateful: '🙏 Grateful' };
+                
+                list.innerHTML = data.entries.reverse().map(e => {
+                    const date = new Date(e.timestamp).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' });
+                    const mLabel = moodEmojis[e.mood] || `📝 ${e.mood}`;
+                    return `
+                        <div class="bg-white p-5 rounded-xl border border-slate-200 animate-fade-in-up shadow-sm mb-3">
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs px-2.5 py-1 rounded-md font-medium">${mLabel}</span>
+                                <span class="text-slate-400 text-xs font-medium">${date}</span>
+                            </div>
+                            <p class="text-slate-700 text-[15px] leading-relaxed">${e.text}</p>
+                        </div>
+                    `;
+                }).join('');
+                
+             } catch (err) {
+                 console.error("Failed to load diary:", err);
+             }
+        }
+
+        // Call loadDiary when switching to the Diary tab
+        const originalSwitchTab = switchTab;
+        switchTab = function(tabId) {
+            originalSwitchTab(tabId);
+            if(tabId === 'diary') {
+                loadDiary();
+            }
+        };
+
+        // --- Peer Chat Logic ---
+        let searchTimeout;
+        let peerReplyTimeout;
+
+        function startPeerSearch() {
+            document.getElementById('findPeerBtn').classList.add('hidden');
+            document.getElementById('peerLoading').classList.remove('hidden');
+            document.getElementById('peerLoading').classList.add('flex');
+
+            // Simulate searching for a peer for 2.5 seconds
+            searchTimeout = setTimeout(() => {
+                document.getElementById('peer-landing').style.display = 'none';
+                document.getElementById('peer-chat-interface').style.display = 'flex';
+                
+                // Clear out any old messages from a previous session
+                document.getElementById('peerChatBox').innerHTML = `<div class="text-center text-xs font-bold text-slate-400 uppercase tracking-widest my-4">You are now chatting with a random peer. Say hi!</div>`;
+            }, 2500);
+        }
+
+        function disconnectPeer() {
+            // Clear any pending timeouts
+            clearTimeout(searchTimeout);
+            clearTimeout(peerReplyTimeout);
+
+            // Reset UI back to landing
+            document.getElementById('peer-chat-interface').style.display = 'none';
+            document.getElementById('peer-landing').style.display = 'flex';
+            
+            // Reset buttons
+            document.getElementById('peerLoading').classList.add('hidden');
+            document.getElementById('peerLoading').classList.remove('flex');
+            document.getElementById('findPeerBtn').classList.remove('hidden');
+        }
+
+        function sendPeerMsg() {
+            const input = document.getElementById('peerInput');
+            const chatBox = document.getElementById('peerChatBox');
+            const msg = input.value.trim();
+            if (!msg) return;
+
+            // Add your message to UI
+            chatBox.innerHTML += `<div class="flex flex-col"><div class="chat-bubble chat-user">${msg}</div></div>`;
+            input.value = '';
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            // Simulate a fake reply from the peer after a delay
+            peerReplyTimeout = setTimeout(() => {
+                chatBox.innerHTML += `
+                    <div class="flex gap-3 animate-fade-in-up">
+                        <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0 mt-1 border border-emerald-200"><i class="fas fa-user-secret text-xs"></i></div>
+                        <div class="chat-bubble chat-peer">
+                            I hear you. It's tough sometimes, but you aren't alone. How are you holding up today?
+                        </div>
+                    </div>`;
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 2500);
+        }
+    </script>
+</body>
+</html>
