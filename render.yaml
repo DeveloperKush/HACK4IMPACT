@@ -1,0 +1,30 @@
+services:
+  # --- Flask Web App ---
+  - type: web
+    name: jan-sahayak-web
+    runtime: python
+    buildCommand: bash build.sh
+    startCommand: gunicorn --worker-class eventlet -w 1 --bind 0.0.0.0:$PORT app:app
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: PYTHON_VERSION
+        value: "3.12.0"
+
+  # --- Telegram Bot (Background Worker) ---
+  - type: worker
+    name: jan-sahayak-bot
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python telegram_bot.py
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: API_BASE
+        sync: false
+      - key: PYTHON_VERSION
+        value: "3.12.0"

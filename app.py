@@ -51,12 +51,16 @@ def new_page():
     return render_template("new.html")
 
 
+# -- Build RAG index on startup (works with both gunicorn and direct run) ----
+
+from rag.dataprep import build_index
+print("[Jan-Sahayak] Building RAG index from data/ folder...")
+_count = build_index()
+print(f"[Jan-Sahayak] Index ready — {_count} chunks in ChromaDB.")
+
 # -- Run --------------------------------------------------------------------
 
 if __name__ == "__main__":
-    from rag.dataprep import build_index
-    print("[Jan-Sahayak] Building RAG index from data/ folder...")
-    count = build_index()
-    print(f"[Jan-Sahayak] Index ready — {count} chunks in ChromaDB.")
-    print("[Jan-Sahayak] Server starting on http://localhost:5000")
-    socketio.run(app, host="0.0.0.0", port=5000, debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    print(f"[Jan-Sahayak] Server starting on http://localhost:{port}")
+    socketio.run(app, host="0.0.0.0", port=port, debug=True)

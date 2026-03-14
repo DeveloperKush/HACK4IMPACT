@@ -15,7 +15,7 @@ from telegram.ext import (
 # Load environment variables
 load_dotenv()
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-API_BASE = "http://127.0.0.1:5000"
+API_BASE = os.getenv("API_BASE", "http://127.0.0.1:5000")
 
 if not TOKEN:
     print("ERROR: TELEGRAM_BOT_TOKEN is missing in the environment or .env file.")
